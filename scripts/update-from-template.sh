@@ -17,6 +17,7 @@ BRANCH="${TEMPLATE_BRANCH:-main}"
 # Личное (data/, profile.md, photos/, reference/foods.csv) НЕ трогаем.
 CODE_PATHS=(
   CLAUDE.md
+  AGENTS.md
   README.md
   LICENSE
   .claude/skills
