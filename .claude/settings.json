@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v jq >/dev/null 2>&1 || exit 0; input=$(cat); src=$(printf '%s' \"$input\" | jq -r '.source // \"startup\"' 2>/dev/null); [ \"$src\" = \"compact\" ] && exit 0; today=$(date +%d.%m.%Y); key=$(date +%Y-%m-%d); diary=\"${CLAUDE_PROJECT_DIR:-.}/data/diary.jsonl\"; if [ -s \"$diary\" ]; then line=$(jq -rs --arg d \"$key\" '[.[]|select(.date==$d)] as $t | \"Сегодня: \\($t|length) приём(ов), \\([$t[].total.kcal]|add // 0) ккал\"' \"$diary\" 2>/dev/null); else line=\"Сегодня записей пока нет.\"; fi; msg=$(printf '🥗 Meal-AI · %s\\n%s\\n\\n• фото еды → запишу приём\\n• «мой вес 68» → журнал веса\\n• «отчёт за неделю» → сводка\\n• «разбери инбокс» → телефон' \"$today\" \"$line\"); jq -n --arg m \"$msg\" '{systemMessage:$m}'",
+            "timeout": 5,
+            "statusMessage": "Приветствие Meal-AI"
+          }
+        ]
+      }
+    ]
+  }
+}
