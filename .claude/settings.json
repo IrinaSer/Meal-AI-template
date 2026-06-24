@@ -6,7 +6,7 @@
           {
             "type": "command",
             "command": "bash \"${CLAUDE_PROJECT_DIR:-.}/scripts/session-welcome.sh\"",
-            "timeout": 5,
+            "timeout": 10,
             "statusMessage": "Приветствие Meal-AI"
           }
         ]
