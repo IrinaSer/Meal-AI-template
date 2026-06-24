@@ -56,8 +56,10 @@ Meal-AI/
 │   ├── foods.csv         твои частые блюда с выверенными цифрами
 │   └── vacation-mode.md  как считать калории без Мака
 └── scripts/
-    ├── process-inbox.sh        фоновый разбор облачного инбокса
-    └── com.meal-ai.inbox.plist launchd-агент (авто-разбор каждые ~15 мин)
+    ├── process-inbox.sh         фоновый разбор облачного инбокса
+    ├── com.meal-ai.inbox.plist  launchd-агент (авто-разбор каждые ~15 мин)
+    ├── session-welcome.sh       приветствие при старте сессии (хук SessionStart)
+    └── update-from-template.sh  подтянуть свежий код из репо-шаблона
 ```
 
 ## 📸 Что происходит с фото

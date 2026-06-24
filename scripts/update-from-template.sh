@@ -24,6 +24,7 @@ CODE_PATHS=(
   .claude/settings.json
   scripts/process-inbox.sh
   scripts/com.meal-ai.inbox.plist
+  scripts/session-welcome.sh
   scripts/update-from-template.sh
   reference/portion-guide.md
   reference/vacation-mode.md
