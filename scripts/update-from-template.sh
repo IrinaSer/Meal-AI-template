@@ -38,7 +38,7 @@ if ! git remote get-url "$REMOTE" >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "Тяну код из $REMOTE/$BRANCH…"
+echo "Тяну код из ${REMOTE}/${BRANCH}..."
 git fetch "$REMOTE"
 
 # Берём только пути, реально существующие в шаблоне, чтобы checkout не падал.
