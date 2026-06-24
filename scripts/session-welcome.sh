@@ -32,9 +32,8 @@ meal_word() { case "$1" in 1) echo приём;; 2|3|4) echo приёма;; *) ec
 wnudge=""
 if [ -s "$diary" ]; then
   # Сводка за сегодня.
-  read -r meals eaten < <(jq -rs --arg d "$key" '[.[]|select(.date==$d)] as $t | "\($t|length) \([$t[].total.kcal]|add // 0)"' "$diary" 2>/dev/null)
+  read -r meals eaten < <(jq -rs --arg d "$key" '[.[]|select(.date==$d)] as $t | "\($t|length) \([$t[].total.kcal]|add // 0|round)"' "$diary" 2>/dev/null)
   meals=${meals:-0}; eaten=${eaten:-0}
-  eaten=$(printf '%.0f' "$eaten" 2>/dev/null || echo 0)
   if [ "$meals" -gt 0 ]; then
     line="Сегодня: ${meals} $(meal_word "$meals"), ${eaten} ккал"
   else

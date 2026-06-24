@@ -26,23 +26,18 @@ if [ -f "$profile" ]; then
   norm=$(grep -m1 '^- Калории:' "$profile" 2>/dev/null | grep -oE '[0-9]+' | head -n1)
 fi
 
-# Суммы за сегодня + число приёмов.
+# Суммы за сегодня + число приёмов. Округляем в jq (локаленезависимо — bash printf
+# с дробями ломается в локали с запятой-разделителем).
 eaten=0 prot=0 fat=0 carb=0 meals=0
 if [ -s "$diary" ]; then
   read -r meals eaten prot fat carb < <(
     jq -rs --arg d "$key" '
       [ .[] | select(.date == $d) ] as $t
-      | "\($t|length) \([$t[].total.kcal]|add // 0) \([$t[].total.protein]|add // 0) \([$t[].total.fat]|add // 0) \([$t[].total.carbs]|add // 0)"
+      | "\($t|length) \([$t[].total.kcal]|add // 0|round) \([$t[].total.protein]|add // 0|round) \([$t[].total.fat]|add // 0|round) \([$t[].total.carbs]|add // 0|round)"
     ' "$diary" 2>/dev/null
   )
   meals=${meals:-0}; eaten=${eaten:-0}; prot=${prot:-0}; fat=${fat:-0}; carb=${carb:-0}
 fi
-
-# Округлим граммы БЖУ до целых для компактности.
-prot=$(printf '%.0f' "$prot" 2>/dev/null || echo 0)
-fat=$(printf '%.0f'  "$fat"  2>/dev/null || echo 0)
-carb=$(printf '%.0f' "$carb" 2>/dev/null || echo 0)
-eaten=$(printf '%.0f' "$eaten" 2>/dev/null || echo 0)
 
 meal_word() { case "$1" in 1) echo "приём";; 2|3|4) echo "приёма";; *) echo "приёмов";; esac; }
 
