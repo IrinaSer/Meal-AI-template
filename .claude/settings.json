@@ -12,5 +12,21 @@
         ]
       }
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"${CLAUDE_PROJECT_DIR:-.}/scripts/statusline.sh\"",
+    "padding": 0
+  },
+  "spinnerVerbs": {
+    "mode": "append",
+    "verbs": [
+      "Взвешиваю",
+      "Считаю БЖУ",
+      "Сверяюсь с foods.csv",
+      "Раскладываю по тарелке",
+      "Прикидываю порцию",
+      "Листаю дневник"
+    ]
   }
 }
