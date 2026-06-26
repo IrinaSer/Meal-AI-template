@@ -29,6 +29,7 @@ CODE_PATHS=(
   scripts/statusline.sh
   scripts/weekly-digest.sh
   scripts/com.meal-ai.weekly.plist
+  scripts/render-diary.sh
   scripts/update-from-template.sh
   reference/portion-guide.md
   reference/vacation-mode.md
