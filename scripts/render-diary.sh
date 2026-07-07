@@ -15,6 +15,7 @@ PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 diary="$PROJECT_DIR/data/diary.jsonl"
 weight="$PROJECT_DIR/data/weight.jsonl"
 profile="$PROJECT_DIR/profile.md"
+norms="$PROJECT_DIR/data/norms.json"
 out="$PROJECT_DIR/data/summary/дневник.md"
 
 # Облачный инбокс (см. CLAUDE.md, INBOX_PATH). Раскрываем ~ вручную.
@@ -22,9 +23,11 @@ INBOX_PATH="${INBOX_PATH:-$HOME/Yandex.Disk.localized/Meal-AI-Inbox}"
 
 since="${1:-0000-00-00}"   # нижняя граница дат (включительно); по умолчанию — всё
 
-# Дневная норма калорий из профиля (строка «- Калории: 1480 ккал»). Пусто, если нет.
+# Дневная норма калорий: сначала машиночитаемый data/norms.json (пишет
+# setup-profile), затем фолбэк — grep по profile.md (старые инстансы).
 norm=""
-[ -f "$profile" ] && norm=$(grep -m1 '^- Калории:' "$profile" 2>/dev/null | grep -oE '[0-9]+' | head -n1)
+[ -s "$norms" ] && norm=$(jq -r '.kcal // empty' "$norms" 2>/dev/null | grep -oE '^[0-9]+' | head -n1)
+[ -z "$norm" ] && [ -f "$profile" ] && norm=$(grep -m1 '^- Калории:' "$profile" 2>/dev/null | grep -oE '[0-9]+' | head -n1)
 
 mkdir -p "$PROJECT_DIR/data/summary"
 

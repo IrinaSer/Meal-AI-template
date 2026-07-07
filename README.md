@@ -52,7 +52,8 @@ Meal-AI/
 ├── profile.md         твой профиль и нормы калорий/БЖУ
 ├── data/
 │   ├── diary.jsonl    дневник еды (по строке на приём пищи)
-│   └── weight.jsonl   журнал веса
+│   ├── weight.jsonl   журнал веса
+│   └── norms.json     дневные нормы в JSON (для статус-строки и рендера дневника)
 ├── photos/YYYY-MM/    фото еды по месяцам
 ├── reference/
 │   ├── portion-guide.md  как оцениваются порции

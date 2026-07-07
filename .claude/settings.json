@@ -1,4 +1,22 @@
 {
+  "permissions": {
+    "allow": [
+      "Read(~/Yandex.Disk.localized/Meal-AI-Inbox/**)",
+      "Edit(~/Yandex.Disk.localized/Meal-AI-Inbox/**)",
+      "Write(~/Yandex.Disk.localized/Meal-AI-Inbox/**)",
+      "Edit(data/**)",
+      "Write(data/**)",
+      "Bash(jq:*)",
+      "Bash(mv:*)",
+      "Bash(cp:*)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(date:*)",
+      "Bash(scripts/render-diary.sh:*)",
+      "Bash(bash scripts/render-diary.sh:*)"
+    ]
+  },
   "hooks": {
     "SessionStart": [
       {

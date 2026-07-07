@@ -18,11 +18,16 @@ fi
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 diary="$PROJECT_DIR/data/diary.jsonl"
 profile="$PROJECT_DIR/profile.md"
+norms="$PROJECT_DIR/data/norms.json"
 key=$(date +%Y-%m-%d)
 
-# Норма калорий из профиля (строка вида «- Калории: 1480 ккал»). Пусто, если нет.
+# Норма калорий: сначала машиночитаемый data/norms.json (пишет setup-profile),
+# затем фолбэк — grep по profile.md (старые инстансы без norms.json).
 norm=""
-if [ -f "$profile" ]; then
+if [ -s "$norms" ]; then
+  norm=$(jq -r '.kcal // empty' "$norms" 2>/dev/null | grep -oE '^[0-9]+' | head -n1)
+fi
+if [ -z "$norm" ] && [ -f "$profile" ]; then
   norm=$(grep -m1 '^- Калории:' "$profile" 2>/dev/null | grep -oE '[0-9]+' | head -n1)
 fi
 

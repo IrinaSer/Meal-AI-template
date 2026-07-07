@@ -2,8 +2,9 @@
 # Данные (data/, profile.md, reference/) НАМЕРЕННО под git — это бэкап и история.
 photos/
 
-# Логи фоновой обработки
+# Логи и лок фоновой обработки
 scripts/*.log
+scripts/.process-inbox.lock/
 
 # Системное
 .DS_Store

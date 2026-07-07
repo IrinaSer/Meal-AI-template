@@ -26,19 +26,38 @@ if [ ! -d "$INBOX_PATH" ]; then
 fi
 
 # Есть ли что обрабатывать: фото или непустой notes.md?
-has_photos=$(find "$INBOX_PATH/photos" -type f 2>/dev/null | head -n1 || true)
+# Фото моложе 1 минуты не считаем — файл может ещё докачиваться клиентом
+# Яндекс.Диска; он попадёт в следующий 15-минутный цикл.
+has_photos=$(find "$INBOX_PATH/photos" -type f -mmin +1 2>/dev/null | head -n1 || true)
 has_notes=$( [ -s "$INBOX_PATH/notes.md" ] && echo yes || true )
 if [ -z "$has_photos" ] && [ -z "$has_notes" ]; then
   echo "$(ts) inbox empty — skip" >> "$LOG"
   exit 0
 fi
 
+# Лок от параллельных запусков: разбор с фото через claude -p может идти дольше
+# 15 минут, и launchd запустит следующий цикл поверх текущего — два процесса
+# начнут одновременно дописывать data/diary.jsonl. mkdir атомарен, поэтому
+# годится как лок без гонок.
+LOCK_DIR="$PROJECT_DIR/scripts/.process-inbox.lock"
+if ! mkdir "$LOCK_DIR" 2>/dev/null; then
+  # Лок старше 60 минут — остался от упавшего/убитого запуска, снимаем.
+  if [ -n "$(find "$LOCK_DIR" -maxdepth 0 -mmin +60 2>/dev/null)" ]; then
+    rmdir "$LOCK_DIR" 2>/dev/null || true
+  fi
+  if ! mkdir "$LOCK_DIR" 2>/dev/null; then
+    echo "$(ts) another run in progress — skip" >> "$LOG"
+    exit 0
+  fi
+fi
+trap 'rmdir "$LOCK_DIR" 2>/dev/null' EXIT
+
 echo "$(ts) processing inbox..." >> "$LOG"
 cd "$PROJECT_DIR"
 
-# Неинтерактивный запуск Claude Code. Для фоновой работы нужны разрешения на
-# запись/перемещение файлов — выдать заранее в .claude/settings.json
-# (через скилл update-config), иначе headless-режим остановится на запросе прав.
+# Неинтерактивный запуск Claude Code. Разрешения на запись/перемещение файлов
+# для headless-режима преднастроены в .claude/settings.json (секция permissions) —
+# без них claude -p остановился бы на запросе прав.
 "$CLAUDE_BIN" -p "Запусти скилл process-inbox: разбери облачный инбокс и обнови ответ.md с остатком калорий за сегодня." \
   >> "$LOG" 2>&1 || echo "$(ts) claude exited non-zero" >> "$LOG"
 

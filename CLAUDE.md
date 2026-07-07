@@ -29,6 +29,15 @@
 `setup-profile` по формуле Mifflin-St Jeor. Если файла нет — система ещё не
 настроена.
 
+### `data/norms.json` (машиночитаемые нормы, для скриптов)
+```json
+{"kcal":1750,"protein":120,"fat":60,"carbs":180,"weight_kg":68,"updated":"2026-06-23"}
+```
+Дубль дневных норм из `profile.md` одной JSON-строкой. Пишется скиллом
+`setup-profile`; из него норму читают `scripts/statusline.sh` и
+`scripts/render-diary.sh` (с фолбэком на grep по `profile.md`, если файла нет).
+**При любом изменении норм обновляй оба файла** — `profile.md` и `norms.json`.
+
 ### `data/diary.jsonl` (дневник еды, append-only, 1 строка = 1 приём пищи)
 ```json
 {"id":"2026-06-23T13:05","date":"2026-06-23","time":"13:05","meal":"lunch","photo":"photos/2026-06/2026-06-23-lunch.jpg","source":"photo","items":[{"name":"гречка отварная","grams":150,"kcal":165,"protein":6,"fat":2,"carbs":30}],"total":{"kcal":165,"protein":6,"fat":2,"carbs":30},"confidence":"medium","notes":"оценка порции на глаз"}
