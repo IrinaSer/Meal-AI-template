@@ -14,7 +14,9 @@
       "Bash(find:*)",
       "Bash(date:*)",
       "Bash(scripts/render-diary.sh:*)",
-      "Bash(bash scripts/render-diary.sh:*)"
+      "Bash(bash scripts/render-diary.sh:*)",
+      "Bash(python3 scripts/jsonl-edit.py:*)",
+      "Bash(scripts/jsonl-edit.py:*)"
     ]
   },
   "hooks": {

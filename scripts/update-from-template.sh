@@ -30,6 +30,7 @@ CODE_PATHS=(
   scripts/weekly-digest.sh
   scripts/com.meal-ai.weekly.plist
   scripts/render-diary.sh
+  scripts/jsonl-edit.py
   scripts/update-from-template.sh
   reference/portion-guide.md
   reference/vacation-mode.md
