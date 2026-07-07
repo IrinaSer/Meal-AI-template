@@ -31,6 +31,7 @@ CODE_PATHS=(
   scripts/com.meal-ai.weekly.plist
   scripts/render-diary.sh
   scripts/jsonl-edit.py
+  scripts/render-trends.py
   scripts/update-from-template.sh
   reference/portion-guide.md
   reference/vacation-mode.md

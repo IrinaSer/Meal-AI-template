@@ -16,7 +16,9 @@
       "Bash(scripts/render-diary.sh:*)",
       "Bash(bash scripts/render-diary.sh:*)",
       "Bash(python3 scripts/jsonl-edit.py:*)",
-      "Bash(scripts/jsonl-edit.py:*)"
+      "Bash(scripts/jsonl-edit.py:*)",
+      "Bash(python3 scripts/render-trends.py:*)",
+      "Bash(scripts/render-trends.py:*)"
     ]
   },
   "hooks": {
