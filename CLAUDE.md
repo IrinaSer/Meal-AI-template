@@ -18,6 +18,9 @@
 - `PHOTO_RETENTION_DAYS = 30` — через столько дней фото удаляются скиллом `cleanup-photos`.
 - `WEIGHT_RECALC_THRESHOLD_KG = 3` — при отклонении веса на столько от профиля
   `nutrition-review` напоминает перезапустить `setup-profile`.
+- `WEIGH_IN_REMINDER_DAYS = 2` — если с последней записи в `data/weight.jsonl`
+  прошло столько дней и больше, `log-meal` напоминает взвеситься (см. его
+  раздел «Напоминание о взвешивании»).
 - `INBOX_PATH = ~/Yandex.Disk.localized/Meal-AI-Inbox` — облачный инбокс (Яндекс.Диск,
   путь подтверждён; Finder показывает папку как «Яндекс.Диск»). Внутри: `photos/`,
   `notes.md`, и генерируемый системой `ответ.md`.
