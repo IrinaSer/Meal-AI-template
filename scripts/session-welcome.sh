@@ -10,10 +10,13 @@ set -uo pipefail
 # Нет jq — приветствия не будет, но старт сессии не ломаем.
 command -v jq >/dev/null 2>&1 || exit 0
 
-WEIGH_NUDGE_DAYS=3   # через сколько дней без взвешивания мягко напомнить
-
 # Каталог проекта по расположению скрипта — не зависит от cwd.
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Порог напоминания о весе — из CLAUDE.md (WEIGH_IN_REMINDER_DAYS), та же
+# настройка, что использует log-meal. Фолбэк 2, если в CLAUDE.md не нашли.
+WEIGH_NUDGE_DAYS=$(grep -m1 'WEIGH_IN_REMINDER_DAYS' "$PROJECT_DIR/CLAUDE.md" 2>/dev/null | grep -oE '[0-9]+' | head -n1)
+[ -z "${WEIGH_NUDGE_DAYS:-}" ] && WEIGH_NUDGE_DAYS=2
 
 input=$(cat)
 src=$(printf '%s' "$input" | jq -r '.source // "startup"' 2>/dev/null)
