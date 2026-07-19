@@ -29,7 +29,8 @@ fi
 # Фото моложе 1 минуты не считаем — файл может ещё докачиваться клиентом
 # Яндекс.Диска; он попадёт в следующий 15-минутный цикл.
 has_photos=$(find "$INBOX_PATH/photos" -type f -mmin +1 2>/dev/null | head -n1 || true)
-has_notes=$( [ -s "$INBOX_PATH/notes.md" ] && echo yes || true )
+has_notes=""
+if [ -s "$INBOX_PATH/notes.md" ]; then has_notes=yes; fi
 if [ -z "$has_photos" ] && [ -z "$has_notes" ]; then
   echo "$(ts) inbox empty — skip" >> "$LOG"
   exit 0
