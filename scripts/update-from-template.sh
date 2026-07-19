@@ -20,6 +20,7 @@ CODE_PATHS=(
   AGENTS.md
   README.md
   LICENSE
+  .gitignore
   .claude/skills
   .claude/agents
   .claude/settings.json
@@ -29,6 +30,8 @@ CODE_PATHS=(
   scripts/statusline.sh
   scripts/weekly-digest.sh
   scripts/com.meal-ai.weekly.plist
+  scripts/backup-data.sh
+  scripts/com.meal-ai.backup.plist
   scripts/render-diary.sh
   scripts/jsonl-edit.py
   scripts/render-trends.py

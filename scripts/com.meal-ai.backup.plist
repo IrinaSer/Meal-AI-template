@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Meal-AI — launchd-агент ежедневного авто-бэкапа данных.
+
+  УСТАНОВКА (из корня проекта-ИНСТАНСА, не шаблона):
+    # Подставить свой путь к проекту вместо плейсхолдера __PROJECT_DIR__:
+    sed "s#__PROJECT_DIR__#$(pwd)#g" scripts/com.meal-ai.backup.plist \
+      > ~/Library/LaunchAgents/com.meal-ai.backup.plist
+    launchctl load ~/Library/LaunchAgents/com.meal-ai.backup.plist
+  ОСТАНОВКА:
+    launchctl unload ~/Library/LaunchAgents/com.meal-ai.backup.plist
+
+  Запускает scripts/backup-data.sh ежедневно в 21:30 (если Мак спал — launchd
+  выполнит при ближайшем пробуждении). Без изменений в данных скрипт тихо выходит.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.meal-ai.backup</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>__PROJECT_DIR__/scripts/backup-data.sh</string>
+    </array>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>21</integer>
+        <key>Minute</key>
+        <integer>30</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>__PROJECT_DIR__/scripts/backup.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>__PROJECT_DIR__/scripts/backup.err.log</string>
+</dict>
+</plist>
