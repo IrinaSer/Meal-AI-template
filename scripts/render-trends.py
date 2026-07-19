@@ -26,6 +26,8 @@ import sys
 
 BAR_W = 28                 # ширина бара калорий в клетках
 SPARK = "▁▂▃▄▅▆▇█"         # градации спарклайна веса
+PLATEAU_WEEKS = 3          # столько последних недель почти без движения веса — плато
+PLATEAU_EPS_KG = 0.3       # «почти без движения» — размах веса в пределах этого
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INBOX_PATH = os.environ.get(
     "INBOX_PATH", os.path.expanduser("~/Yandex.Disk.localized/Meal-AI-Inbox"))
@@ -138,8 +140,11 @@ def section_weight(ws):
     out.append(f"{spark}   (min {fmt_kg(lo)} · max {fmt_kg(hi)})")
     # Сглаженный тренд: сырой вес скачет от воды и еды, смотрим среднее за 7 дней.
     if len(ws) >= 5:
-        s0, s1 = smooth(ws, 0), smooth(ws, len(ws) - 1)
-        out.append(f"тренд по среднему за 7 дней: {s0:.1f} → {s1:.1f} кг ({s1 - s0:+.1f})")
+        sm = [smooth(ws, i) for i in range(len(ws))]
+        slo, shi = min(sm), max(sm)
+        sspark = "".join(SPARK[round((v - slo) / (shi - slo or 1) * 7)] for v in sm)
+        out.append(f"{sspark}   среднее за 7 дн.: {sm[0]:.1f} → {sm[-1]:.1f} кг "
+                   f"({sm[-1] - sm[0]:+.1f})")
     out.append("```")
     return out
 
@@ -170,9 +175,24 @@ def section_weeks(kcal_by_day, ws, norm):
             line += f"   вес {fmt_kg(w_last[wk])} кг"
         prev_w = w_last.get(wk, prev_w)
         out.append(line)
-    out += ["```",
-            "_Если при заявленном дефиците вес стоит несколько недель — порции,_",
-            "_скорее всего, недооцениваются, либо норму пора пересчитать._"]
+    out.append("```")
+    # Плато: последние PLATEAU_WEEKS недель с взвешиваниями вес стоит на месте.
+    recent_wks = sorted(w_last)[-PLATEAU_WEEKS:]
+    recent = [w_last[wk] for wk in recent_wks]
+    if len(recent) >= PLATEAU_WEEKS and max(recent) - min(recent) <= PLATEAU_EPS_KG:
+        kcals = [k for wk in recent_wks for k in weeks.get(wk, [])]
+        note = (f"⚠ Похоже на плато: вес почти не меняется {PLATEAU_WEEKS} недели подряд"
+                f" (размах ≤ {fmt_kg(PLATEAU_EPS_KG)} кг).")
+        if norm and kcals and sum(kcals) / len(kcals) < norm:
+            note += (" При этом дневник показывает дефицит — вероятно, порции"
+                     " недооцениваются, либо норма устарела: пересчитай её"
+                     " (setup-profile).")
+        else:
+            note += " Если цель — снижение веса, стоит пересмотреть рацион или нормы."
+        out.append(note)
+    else:
+        out += ["_Если при заявленном дефиците вес стоит несколько недель — порции,_",
+                "_скорее всего, недооцениваются, либо норму пора пересчитать._"]
     return out
 
 
