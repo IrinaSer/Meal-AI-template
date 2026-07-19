@@ -9,7 +9,8 @@
 # credential helper (osxkeychain — стандарт на Маке), для ssh — ключ без пароля.
 set -euo pipefail
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Корень проекта: по расположению скрипта; MEAL_AI_DIR переопределяет (тесты).
+PROJECT_DIR="${MEAL_AI_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 LOG="$PROJECT_DIR/scripts/backup-data.log"
 # Только личные данные — код обновляется через update-from-template.sh.
 DATA_PATHS=(data profile.md reference/foods.csv)
