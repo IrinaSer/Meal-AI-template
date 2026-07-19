@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Тесты scripts/backup-data.sh: авто-коммит личных данных и пуш в origin.
+# shellcheck disable=SC1091  # путь вычисляется в рантайме
 source "$(dirname "${BASH_SOURCE[0]}")/helpers.sh"
 SCRIPT="$REPO_DIR/scripts/backup-data.sh"
 

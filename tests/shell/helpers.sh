@@ -4,6 +4,7 @@
 set -uo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+export REPO_DIR   # используется тест-файлами после source
 _FAILS=0
 _COUNT=0
 
@@ -29,6 +30,7 @@ days_ago() {   # дата N дней назад, YYYY-MM-DD; работает н
 make_sandbox() {
   SANDBOX="$(mktemp -d)"
   mkdir -p "$SANDBOX/data" "$SANDBOX/scripts"
+  # shellcheck disable=SC2016  # бэктики литеральные, как в настоящем CLAUDE.md
   printf -- '- `WEIGH_IN_REMINDER_DAYS = 2` — порог напоминания.\n' > "$SANDBOX/CLAUDE.md"
   export MEAL_AI_DIR="$SANDBOX" INBOX_PATH=/nonexistent
 }

@@ -2,7 +2,7 @@
 # Раннер shell-тестов Meal-AI: гоняет все tests/shell/test-*.sh, итожит.
 # Запуск: tests/shell/run.sh
 set -uo pipefail
-cd "$(dirname "${BASH_SOURCE[0]}")"
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
 
 command -v jq >/dev/null 2>&1 || { echo "нужен jq"; exit 1; }
 

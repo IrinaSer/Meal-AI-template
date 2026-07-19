@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Тесты scripts/session-welcome.sh: приветствие, серия, напоминание о весе.
+# shellcheck disable=SC1091  # путь вычисляется в рантайме
 source "$(dirname "${BASH_SOURCE[0]}")/helpers.sh"
 SCRIPT="$REPO_DIR/scripts/session-welcome.sh"
 
@@ -53,6 +54,7 @@ test_no_nudge_when_fresh_weight() {
 }
 
 test_threshold_read_from_claude_md() {
+  # shellcheck disable=SC2016  # бэктики литеральные, как в настоящем CLAUDE.md
   printf -- '- `WEIGH_IN_REMINDER_DAYS = 5` — порог.\n' > "$SANDBOX/CLAUDE.md"
   printf '{"date":"%s","total":{"kcal":500}}\n' "$(days_ago 0)" > "$SANDBOX/data/diary.jsonl"
   printf '{"date":"%s","weight_kg":67}\n' "$(days_ago 3)" > "$SANDBOX/data/weight.jsonl"

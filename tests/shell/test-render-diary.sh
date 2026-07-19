@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Тесты scripts/render-diary.sh: сборка читаемого дневника из diary.jsonl.
+# shellcheck disable=SC1091  # путь вычисляется в рантайме
 source "$(dirname "${BASH_SOURCE[0]}")/helpers.sh"
 SCRIPT="$REPO_DIR/scripts/render-diary.sh"
 OUT="дневник.md"

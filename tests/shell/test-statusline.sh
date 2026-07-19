@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Тесты scripts/statusline.sh: строка остатка калорий в подвале.
+# shellcheck disable=SC1091  # путь вычисляется в рантайме
 source "$(dirname "${BASH_SOURCE[0]}")/helpers.sh"
 SCRIPT="$REPO_DIR/scripts/statusline.sh"
 
