@@ -10,8 +10,8 @@ set -uo pipefail
 # Нет jq — приветствия не будет, но старт сессии не ломаем.
 command -v jq >/dev/null 2>&1 || exit 0
 
-# Каталог проекта по расположению скрипта — не зависит от cwd.
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Каталог проекта по расположению скрипта; MEAL_AI_DIR переопределяет (тесты).
+PROJECT_DIR="${MEAL_AI_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
 # Порог напоминания о весе — из CLAUDE.md (WEIGH_IN_REMINDER_DAYS), та же
 # настройка, что использует log-meal. Фолбэк 2, если в CLAUDE.md не нашли.

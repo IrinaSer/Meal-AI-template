@@ -11,7 +11,8 @@ set -uo pipefail
 
 command -v jq >/dev/null 2>&1 || { echo "render-diary: нужен jq" >&2; exit 0; }
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Корень проекта: по расположению скрипта; MEAL_AI_DIR переопределяет (тесты).
+PROJECT_DIR="${MEAL_AI_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 diary="$PROJECT_DIR/data/diary.jsonl"
 weight="$PROJECT_DIR/data/weight.jsonl"
 profile="$PROJECT_DIR/profile.md"
