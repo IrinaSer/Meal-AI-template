@@ -64,6 +64,14 @@
 {"date":"2026-06-23","weight_kg":68.5,"notes":"утром натощак"}
 ```
 
+### `data/measurements.jsonl` (обмеры тела)
+```json
+{"date":"2026-06-23","waist_cm":78,"hips_cm":98,"chest_cm":92,"notes":"утром"}
+```
+Ключ — `date`, как у веса. `waist_cm`/`hips_cm`/`chest_cm` — каждое опционально,
+но хотя бы одно должно быть (мерить не обязательно всё за раз). Независим от
+`weight.jsonl` — своя дата, свой поток записи.
+
 ### `reference/foods.csv` (память частых блюд, значения на 100 г)
 ```
 name,kcal_100g,protein_100g,fat_100g,carbs_100g,typical_grams,notes
@@ -90,8 +98,8 @@ Unicode-графики калорий по дням, спарклайн веса
 
 ## Запись и правка JSONL — только хелпером
 
-Любые изменения `data/diary.jsonl` и `data/weight.jsonl` делай через
-`scripts/jsonl-edit.py`, не руками (Edit/Write):
+Любые изменения `data/diary.jsonl`, `data/weight.jsonl` и `data/measurements.jsonl`
+делай через `scripts/jsonl-edit.py`, не руками (Edit/Write):
 
 ```bash
 python3 scripts/jsonl-edit.py append  <file> '<json>'          # добавить
@@ -109,6 +117,7 @@ JSON, **сам пересчитывает `total` из `items`** и гарант
 - `setup-profile` — настроить профиль и нормы (запускается первым).
 - `log-meal` — фото/описание → запись в дневник + остаток дневного бюджета.
 - `log-weight` — записать вес.
+- `log-measurements` — записать обмеры тела (талия/бёдра/грудь).
 - `view-diary` — показать дневник «как журнал»: записи по дням, без анализа (режим чтения). Рендерит через `scripts/render-diary.sh`.
 - `view-trends` — графики трендов веса и калорий (Unicode, без анализа). Рендерит через `scripts/render-trends.py`.
 - `nutrition-review` — сводки за период, тренды, короткие рекомендации, динамика веса.
@@ -144,7 +153,8 @@ JSON, **сам пересчитывает `total` из `items`** и гарант
 
 ## Обработка повреждённых данных
 
-При чтении JSONL-файлов (`data/diary.jsonl`, `data/weight.jsonl`):
+При чтении JSONL-файлов (`data/diary.jsonl`, `data/weight.jsonl`,
+`data/measurements.jsonl`):
 - Невалидная строка (не парсится как JSON) — пропускай с предупреждением,
   не падай. Сообщи пользователю, что строка повреждена.
 - Отсутствующее поле `total` в записи дневника — пересчитай из `items`,

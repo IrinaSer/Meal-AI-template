@@ -76,6 +76,38 @@ class TestPlateau(Base):
         self.assertIn("среднее за 7 дн.", r.stdout)
 
 
+class TestMeasurements(Base):
+    def test_no_measurements_no_section(self):
+        self.write_jsonl("diary.jsonl", [{"date": day(0), "total": {"kcal": 1500}}])
+        r = self.run_script(day(5))
+        self.assertNotIn("## Обмеры", r.stdout)
+
+    def test_single_measurement_shows_hint_not_trend(self):
+        self.write_jsonl("diary.jsonl", [{"date": day(0), "total": {"kcal": 1500}}])
+        self.write_jsonl("measurements.jsonl", [{"date": day(0), "waist_cm": 78}])
+        r = self.run_script(day(5))
+        self.assertIn("## Обмеры", r.stdout)
+        self.assertIn("хотя бы 2 записи", r.stdout)
+        self.assertNotIn("Талия:", r.stdout)
+
+    def test_two_measurements_show_trend_and_spark(self):
+        self.write_jsonl("diary.jsonl", [{"date": day(0), "total": {"kcal": 1500}}])
+        self.write_jsonl("measurements.jsonl", [
+            {"date": day(10), "waist_cm": 78},
+            {"date": day(0), "waist_cm": 76}])
+        r = self.run_script(day(15))
+        self.assertIn("Талия: 78 → 76 см (-2.0)", r.stdout)
+
+    def test_fields_tracked_independently(self):
+        self.write_jsonl("diary.jsonl", [{"date": day(0), "total": {"kcal": 1500}}])
+        self.write_jsonl("measurements.jsonl", [
+            {"date": day(10), "waist_cm": 78, "hips_cm": 98},
+            {"date": day(0), "waist_cm": 76}])
+        r = self.run_script(day(15))
+        self.assertIn("Талия:", r.stdout)
+        self.assertNotIn("Бёдра:", r.stdout)
+
+
 class TestGraceful(Base):
     def test_empty_data_friendly_stub(self):
         r = self.run_script()
