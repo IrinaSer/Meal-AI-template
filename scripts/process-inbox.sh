@@ -15,20 +15,24 @@ PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CLAUDE_BIN="${CLAUDE_BIN:-$(command -v claude || echo "$HOME/.local/bin/claude")}"
 # Должно совпадать с INBOX_PATH в CLAUDE.md (уточнить после установки Яндекс.Диска):
 INBOX_PATH="${MEAL_AI_INBOX:-$HOME/Yandex.Disk.localized/Meal-AI-Inbox}"
+# Локальная папка на ноутбуке для фото, скинутых напрямую (без телефона/облака).
+# Должно совпадать с LOCAL_INBOX_PATH в CLAUDE.md:
+LOCAL_INBOX_PATH="${MEAL_AI_LOCAL_INBOX:-$HOME/Projects/Meal-AI/photos-inbox}"
 LOG="$PROJECT_DIR/scripts/process-inbox.log"
 
 ts() { date '+%Y-%m-%d %H:%M:%S'; }
 
-# Инбокса ещё нет (клиент не установлен / не залогинен) — выходим тихо.
-if [ ! -d "$INBOX_PATH" ]; then
-  echo "$(ts) inbox not found ($INBOX_PATH) — skip" >> "$LOG"
+# Ни одного источника нет (Яндекс.Диск не установлен и локальная папка не создана) — выходим тихо.
+if [ ! -d "$INBOX_PATH" ] && [ ! -d "$LOCAL_INBOX_PATH" ]; then
+  echo "$(ts) no inbox sources found ($INBOX_PATH, $LOCAL_INBOX_PATH) — skip" >> "$LOG"
   exit 0
 fi
 
-# Есть ли что обрабатывать: фото или непустой notes.md?
+# Есть ли что обрабатывать: фото (облако и/или локальная папка) или непустой notes.md?
 # Фото моложе 1 минуты не считаем — файл может ещё докачиваться клиентом
-# Яндекс.Диска; он попадёт в следующий 15-минутный цикл.
-has_photos=$(find "$INBOX_PATH/photos" -type f -mmin +1 2>/dev/null | head -n1 || true)
+# Яндекс.Диска (или копироваться в локальную папку); он попадёт в следующий
+# 15-минутный цикл.
+has_photos=$(find "$INBOX_PATH/photos" "$LOCAL_INBOX_PATH" -type f -mmin +1 2>/dev/null | head -n1 || true)
 has_notes=""
 if [ -s "$INBOX_PATH/notes.md" ]; then has_notes=yes; fi
 if [ -z "$has_photos" ] && [ -z "$has_notes" ]; then
@@ -59,7 +63,7 @@ cd "$PROJECT_DIR"
 # Неинтерактивный запуск Claude Code. Разрешения на запись/перемещение файлов
 # для headless-режима преднастроены в .claude/settings.json (секция permissions) —
 # без них claude -p остановился бы на запросе прав.
-"$CLAUDE_BIN" -p "Запусти скилл process-inbox: разбери облачный инбокс и обнови ответ.md с остатком калорий за сегодня." \
+"$CLAUDE_BIN" -p "Запусти скилл process-inbox: разбери облачный инбокс и локальную папку с фото, обнови ответ.md с остатком калорий за сегодня." \
   >> "$LOG" 2>&1 || echo "$(ts) claude exited non-zero" >> "$LOG"
 
 echo "$(ts) done" >> "$LOG"
